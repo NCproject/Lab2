@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: Pavel_Mishchenko
+Main-Class: controller.Controller
+Class-Path: .;log4j/log4j-1.2.17.jar
