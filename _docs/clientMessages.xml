@@ -1,0 +1,76 @@
+<!-- Update client info -->
+<envelope>
+	<header>
+		<action>
+			UPDATE
+		</action>		
+	</header>
+	<body>		
+	</body>
+</envelope>
+
+<!-- Operations with groups -->
+<envelope>
+	<header>
+		<action>
+			SHOW || REMOVEGroup || ADDGroup
+		</action>
+		<fakulty>
+			faculty
+		</fakulty>
+		<group>
+			group
+		</group>
+	</header>
+	<body>		
+	</body>
+</envelope>
+
+<!-- Delete student -->
+<envelope>
+	<header>
+		<action>
+			REMOVE
+		</action>
+		<fakulty>
+			faculty
+		</fakulty>
+		<group>
+			group
+		</group>
+	</header>
+	<body>
+		<studentID>
+			id 
+		</studentID>		
+	</body>
+</envelope>
+
+<!-- Add or change student -->
+<envelope>
+	<header>
+		<action>
+			ADD || CHANGE
+		</action>
+		<fakulty>
+			faculty
+		</fakulty>
+		<group>
+			group
+		</group>
+	</header>
+	<body>
+		<studentID>
+			id 
+		</studentID>
+		<studentName>
+			firstName
+		</studentName>
+		<studentLastname>
+			lastName
+		</studentLastname>
+		<enrolledDate>
+			date
+		</enrolledDate>	
+	</body>
+</envelope>
