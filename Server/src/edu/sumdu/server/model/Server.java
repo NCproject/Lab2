@@ -1,6 +1,7 @@
 package edu.sumdu.server.model;
 
 import java.sql.*;
+
 import org.w3c.dom.Document;
 import org.apache.log4j.Logger;
 
@@ -84,10 +85,8 @@ public class Server implements ServerModel {
 	}
 
 	/**
-	 * Sets the document.
-	 * 
-	 * @param document
-	 *            the new document
+	 * Sets the document. 
+	 * @param document the new document
 	 */
 	private void setDocument(Document document) {
 		if (log.isDebugEnabled())
@@ -95,6 +94,9 @@ public class Server implements ServerModel {
 		this.document = document;
 	}
 	
+	/**
+	 * Create connection to mySQL DB 
+	 */
 	public void connectToDB(){
 		if (log.isDebugEnabled())
 			log.debug("Connection to DB");
@@ -105,5 +107,28 @@ public class Server implements ServerModel {
 			e.printStackTrace();
 			log.error("Exception", e);        
 		}
+	}
+	
+	/**
+	 * Authorization for server operations
+	 * @param login user login
+	 * @param password user password
+	 */
+	public boolean authorisation(String login, String password){
+		if (log.isDebugEnabled())
+			log.debug("Authorisation. User: " + login + " Password: " + password);
+		boolean result = false;
+		try {
+			 Statement st = conn.createStatement();
+			 ResultSet rs = st.executeQuery("SELECT id FROM users WHERE login = '"
+					 + login + "' AND password = '" + password + "'");
+			 if (rs.next())
+				 result = true;			 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			log.error("Exception", e);
+		}
+		
+		return result;
 	}
 }

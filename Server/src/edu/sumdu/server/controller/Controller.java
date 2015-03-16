@@ -68,6 +68,7 @@ public class Controller implements ActionListener {
             server.setXmlPath(controller.xmlpath);
             server.setDtdPath(controller.dtdpath);
             server.connectToDB();
+            boolean isAutorized = server.authorisation("user","111");
             controller.server = server;
             controller.exitHandler();
             controller.starting();

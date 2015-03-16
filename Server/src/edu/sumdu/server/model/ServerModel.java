@@ -23,4 +23,6 @@ public interface ServerModel {
 
 	public void connectToDB();
 
+	public boolean authorisation(String login, String password);
+
 }
