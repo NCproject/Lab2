@@ -21,4 +21,6 @@ public interface ServerModel {
      */
     public void setDtdPath(String dtdpath);
 
+	public void connectToDB();
+
 }

@@ -67,6 +67,7 @@ public class Controller implements ActionListener {
             Controller controller = new Controller(server);
             server.setXmlPath(controller.xmlpath);
             server.setDtdPath(controller.dtdpath);
+            server.connectToDB();
             controller.server = server;
             controller.exitHandler();
             controller.starting();

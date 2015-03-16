@@ -1,5 +1,6 @@
 package edu.sumdu.server.model;
 
+import java.sql.*;
 import org.w3c.dom.Document;
 import org.apache.log4j.Logger;
 
@@ -18,6 +19,16 @@ public class Server implements ServerModel {
 
 	/** The dtd path. */
 	private String dtdPath;
+	
+	private String host = "localhost";
+	
+	private String dbName = "students";
+	
+	private String user = "root";
+	
+	private String password = "";
+	
+	private Connection conn;
 
 	/**
 	 * Sets the dtd path.
@@ -82,5 +93,17 @@ public class Server implements ServerModel {
 		if (log.isDebugEnabled())
 			log.debug("Method call");
 		this.document = document;
+	}
+	
+	public void connectToDB(){
+		if (log.isDebugEnabled())
+			log.debug("Connection to DB");
+		try {
+			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+			conn = DriverManager.getConnection("jdbc:mysql://" + host + "/" + dbName, user, password);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			log.error("Exception", e);        
+		}
 	}
 }
