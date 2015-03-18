@@ -1,8 +1,6 @@
 package edu.sumdu.server.model;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -24,59 +22,12 @@ public class Student implements Cloneable {
     private String lastName;
 
     /** The group number. */
-    private String groupNumber;
+    private int groupId;
     
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result
-                + ((enrolled == null) ? 0 : enrolled.hashCode());
-        result = prime * result
-                + ((firstName == null) ? 0 : firstName.hashCode());
-        result = prime * result
-                + ((groupNumber == null) ? 0 : groupNumber.hashCode());
-        result = prime * result + id;
-        result = prime * result
-                + ((lastName == null) ? 0 : lastName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Student other = (Student) obj;
-        if (enrolled == null) {
-            if (other.enrolled != null)
-                return false;
-        } else if (!enrolled.equals(other.enrolled))
-            return false;
-        if (firstName == null) {
-            if (other.firstName != null)
-                return false;
-        } else if (!firstName.equals(other.firstName))
-            return false;
-        if (groupNumber == null) {
-            if (other.groupNumber != null)
-                return false;
-        } else if (!groupNumber.equals(other.groupNumber))
-            return false;
-        if (id != other.id)
-            return false;
-        if (lastName == null) {
-            if (other.lastName != null)
-                return false;
-        } else if (!lastName.equals(other.lastName))
-            return false;
-        return true;
-    }
-
     /** The enrolled date. */
     private String enrolled;
+    
+    private int facultyId;
 
     @Override
     public String toString() {
@@ -87,16 +38,13 @@ public class Student implements Cloneable {
         studentString.append(firstName);
         studentString.append(", lastName=");
         studentString.append(lastName);
-        studentString.append(", groupNumber=");
-        studentString.append(groupNumber);
+        studentString.append(", groupId=");
+        studentString.append(groupId);
         studentString.append(", enrolled=");
         studentString.append(enrolled);
         studentString.append("]");        
         return studentString.toString();
     }
-
-    /** The Constant format. */
-    private static final DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     /**
      * Gets the last name.
@@ -157,8 +105,8 @@ public class Student implements Cloneable {
      * 
      * @return the group number
      */
-    public String getGroupNumber() {
-        return groupNumber;
+    public int getGroupId() {
+        return groupId;
     }
 
     /**
@@ -166,8 +114,8 @@ public class Student implements Cloneable {
      * 
      * @param groupNumber the new group number
      */
-    public void setGroupNumber(String groupNumber) {
-        this.groupNumber = groupNumber;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     /**
@@ -185,8 +133,7 @@ public class Student implements Cloneable {
      * @param enrolled the new enrolled
      * @throws ParseException
      */
-    public void setEnrolled(String enrolled) throws ParseException {
-        format.parse(enrolled);
+    public void setEnrolled(String enrolled) {       
         this.enrolled = enrolled;
     }
 
@@ -204,8 +151,8 @@ public class Student implements Cloneable {
                     .getNodeValue());
             setLastName(node.getAttributes().getNamedItem("lastname")
                     .getNodeValue());
-            setGroupNumber(node.getAttributes().getNamedItem("groupnumber")
-                    .getNodeValue());
+            setGroupId(Integer.parseInt(node.getAttributes().getNamedItem("groupid")
+                    .getNodeValue()));
             setEnrolled(node.getAttributes().getNamedItem("enrolled")
                     .getNodeValue());
         } catch (NumberFormatException e) {
@@ -214,11 +161,6 @@ public class Student implements Cloneable {
         } catch (DOMException e) {
             throw new ServerException(
                     "Can not create a student! DOMException - something wrong with XML-file!",
-                    e);
-        } catch (ParseException e) {
-            throw new ServerException(
-                    "Can not create a student! Something wrong with date of enroll at the University,"
-                    + " Date fromat must be dd.MM.yyyy!",
                     e);
         }
     }
@@ -234,7 +176,7 @@ public class Student implements Cloneable {
         studentNode.setAttribute("id", new Integer(getId()).toString());
         studentNode.setAttribute("firstname", getFirstName());
         studentNode.setAttribute("lastname", getLastName());
-        studentNode.setAttribute("groupnumber", getGroupNumber());
+        studentNode.setAttribute("groupnumber",  new Integer(getGroupId()).toString());
         studentNode.setAttribute("enrolled", getEnrolled());
         group.appendChild(studentNode);
     }
@@ -250,30 +192,32 @@ public class Student implements Cloneable {
      * @throws ServerException
      */
     public Student(int id, String firstName, String lastName,
-            String groupNumber, String enrolled) throws ServerException {
+            int groupId, int facultyId, String enrolled) throws ServerException {
         setId(id);
         setFirstName(firstName);
         setLastName(lastName);
-        setGroupNumber(groupNumber);
-        try {
-            setEnrolled(enrolled);
-        } catch (ParseException e) {
-            throw new ServerException("Wrong date format! Format must be dd.MM.yyyy", e);
-        }
+        setGroupId(groupId);
+        setFacultyId(facultyId);
+        setEnrolled(enrolled); 
     }
 
     public Student() {
         // TODO Auto-generated constructor stub
     }
-
-    @Override
-    public Object clone() {
-        try {
-            Student newStudent = (Student) super.clone();
-            return newStudent;
-        } catch (CloneNotSupportedException e) {
-            throw new InternalError();
-        }
+    
+    /**
+     * Return the student`s faculty id
+     * @return int
+     */
+    public int getFacultyId() {
+    	return this.facultyId;
     }
-
+    
+    /**
+     * Set the student`s faculty id
+     * @param facultyId id of faculty
+     */
+    public void setFacultyId(int facultyId) {
+    	this.facultyId = facultyId;
+    }
 }

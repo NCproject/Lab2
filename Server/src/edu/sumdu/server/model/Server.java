@@ -1,65 +1,23 @@
 package edu.sumdu.server.model;
 
-import java.sql.*;
+import java.util.List;
 
-import org.w3c.dom.Document;
 import org.apache.log4j.Logger;
 
 /**
  * The Class Server, using XML as DB.
  */
 public class Server implements ServerModel {
-	/** The logger. */
+	/** logger */
 	private static final Logger log = Logger.getLogger(Server.class);
-
-	/** The document. */
-	private Document document = null;
-
-	/** The xml path. */
-	private String xmlPath;
-
-	/** The dtd path. */
-	private String dtdPath;
 	
-	private String host = "localhost";
+	/** database */
+	private DB db;
 	
-	private String dbName = "students";
-	
-	private String user = "root";
-	
-	private String password = "";
-	
-	private Connection conn;
-
-	/**
-	 * Sets the dtd path.
-	 * 
-	 * @param dtdPath
-	 *            the new dtd path
-	 */
-	public void setDtdPath(String dtdPath) {
-		if (log.isDebugEnabled())
-			log.debug("Method call");
-		this.dtdPath = dtdPath;
+	public void setDb(DB db) {
+		this.db = db;
 	}
-
-	/**
-	 * Instantiates a new server.
-	 * 
-	 * @param xmlPath
-	 *            the path to xml file
-	 * @param dtdPath
-	 *            the path to dtd file
-	 * @throws ServerException
-	 *             if can not read xml file
-	 */
-	private Server(String xmlPath, String dtdPath) throws ServerException {
-		if (log.isDebugEnabled())
-			log.debug("Construktor call. Arguments: " + xmlPath + " " + dtdPath);
-		setXmlPath(xmlPath);
-		setDtdPath(dtdPath);
-	}
-
+	
 	/**
 	 * Instantiates a new server.
 	 * 
@@ -71,64 +29,15 @@ public class Server implements ServerModel {
 			log.debug("Construktor call");
 	}
 
-	/**
-	 * Sets the xml path.
-	 * 
-	 * @param xmlPath
-	 *            the new xml path
-	 */
-	public void setXmlPath(String xmlPath) {
-		if (log.isDebugEnabled())
-			log.debug("Method call");
-		this.xmlPath = xmlPath;
-
-	}
-
-	/**
-	 * Sets the document. 
-	 * @param document the new document
-	 */
-	private void setDocument(Document document) {
-		if (log.isDebugEnabled())
-			log.debug("Method call");
-		this.document = document;
+	public boolean authorisation(String login, String password) {
+		return db.authorisation(login, password);
 	}
 	
-	/**
-	 * Create connection to mySQL DB 
-	 */
-	public void connectToDB(){
-		if (log.isDebugEnabled())
-			log.debug("Connection to DB");
-		try {
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			conn = DriverManager.getConnection("jdbc:mysql://" + host + "/" + dbName, user, password);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			log.error("Exception", e);        
-		}
+	public List<Faculty> getFilters() {
+		return db.getAllFacultiesWithGroups();
 	}
 	
-	/**
-	 * Authorization for server operations
-	 * @param login user login
-	 * @param password user password
-	 */
-	public boolean authorisation(String login, String password){
-		if (log.isDebugEnabled())
-			log.debug("Authorisation. User: " + login + " Password: " + password);
-		boolean result = false;
-		try {
-			 Statement st = conn.createStatement();
-			 ResultSet rs = st.executeQuery("SELECT id FROM users WHERE login = '"
-					 + login + "' AND password = '" + password + "'");
-			 if (rs.next())
-				 result = true;			 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			log.error("Exception", e);
-		}
-		
-		return result;
+	public List<Student> getStudentsByFilters(int facultyId, int groupId, String lastName) {
+		return db.getStudentsByFilters(facultyId, groupId, lastName);
 	}
 }

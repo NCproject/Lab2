@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
 
 import edu.sumdu.server.model.*;
 import edu.sumdu.server.controller.ControllerException;
@@ -16,29 +17,26 @@ import org.apache.log4j.Logger;
  */
 public class Controller implements ActionListener {
 
-    /** The logger */
+    /** logger */
     private static final Logger log = Logger.getLogger(Controller.class);
 
-    /** The server. */
+    /** server */
     private ServerModel server;
 
-    /** The xmlpath. */
-    private String xmlpath = "groups.xml";
-
-    /** The dtdpath. */
-    private String dtdpath = "groups.dtd";
-    
+    /** port */
     private int port = 7070;
     
+    /** threadController */
     private ThreadController threadController;
+    
+    /** Connection */
+    private Connection conn;
 
     /**
      * Instantiates a new controller.
      * 
-     * @param server
-     *            the server
-     * @param view
-     *            the view
+     * @param server the server
+     * @param view the view
      */
     public Controller(ServerModel server) {
         if (log.isDebugEnabled())
@@ -56,8 +54,7 @@ public class Controller implements ActionListener {
     /**
      * The main method.
      * 
-     * @param args
-     *            the arguments
+     * @param args the arguments
      */
     public static void main(String[] args) {
         if (log.isDebugEnabled())
@@ -65,12 +62,10 @@ public class Controller implements ActionListener {
         try {
             ServerModel server = new Server();
             Controller controller = new Controller(server);
-            server.setXmlPath(controller.xmlpath);
-            server.setDtdPath(controller.dtdpath);
-            server.connectToDB();
-            boolean isAutorized = server.authorisation("user","111");
-            controller.server = server;
-            controller.exitHandler();
+            DB db = new DB();
+            db.connectToDB();
+            server.setDb(db);                     
+            controller.server = server;           
             controller.starting();
         } catch (ServerException ex) {
             ControllerException e = new ControllerException(ex);
@@ -107,19 +102,5 @@ public class Controller implements ActionListener {
                 throw ex;
             }
         }
-    }
-    
-    /**
-     * Saves data in xml file on exit
-     */
-    private void exitHandler() {
-        if (log.isDebugEnabled())
-            log.debug("Method call");
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {                
-                if (log.isDebugEnabled())
-                    log.debug("Upload on exit");                
-            }
-        });
     }
 }

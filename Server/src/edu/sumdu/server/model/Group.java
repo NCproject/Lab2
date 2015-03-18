@@ -6,21 +6,30 @@ import java.util.List;
 /**
  * The Class Group.
  */
-public class Group implements Cloneable {
+public class Group {
 
     /** The faculty. */
-    private String fakulty;
-
+    private int fakultyId;
+    private int id;
+    
     /** The number of group, unique. */
     private String number;
 
     private ArrayList<Student> students = new ArrayList<Student>();
 
+    public void setFaculty (int fakultyId) {
+		this.fakultyId = fakultyId;
+	}
+    
+    public void setId (int id) {
+		this.id = id;
+	}
+    
     @Override
     public String toString() {
         StringBuilder groupString = new StringBuilder ();
         groupString.append("Group [fakulty=");
-        groupString.append(fakulty);
+        groupString.append(fakultyId);
         groupString.append(", number=");
         groupString.append(number);
         groupString.append("]");        
@@ -33,8 +42,8 @@ public class Group implements Cloneable {
      * @param fakulty the faculty
      * @param number the number
      */
-    public Group(String fakulty, String number) {
-        setFakulty(fakulty);
+    public Group(int fakultyId, String number) {
+        setFakulty(fakultyId);
         setNumber(number);
     }
 
@@ -69,8 +78,8 @@ public class Group implements Cloneable {
      * 
      * @return the faculty
      */
-    public String getFakulty() {
-        return fakulty;
+    public int getFakulty() {
+        return fakultyId;
     }
 
     /**
@@ -78,8 +87,8 @@ public class Group implements Cloneable {
      * 
      * @param fakulty the new faculty
      */
-    public void setFakulty(String fakulty) {
-        this.fakulty = fakulty;
+    public void setFakulty(int fakultyId) {
+        this.fakultyId = fakultyId;
     }
 
     /**
@@ -100,52 +109,6 @@ public class Group implements Cloneable {
         this.number = number;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((fakulty == null) ? 0 : fakulty.hashCode());
-        result = prime * result + ((number == null) ? 0 : number.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Group other = (Group) obj;
-        if (fakulty == null) {
-            if (other.fakulty != null)
-                return false;
-        } else if (!fakulty.equals(other.fakulty))
-            return false;
-        if (number == null) {
-            if (other.number != null)
-                return false;
-        } else if (!number.equals(other.number))
-            return false;
-        return true;
-    }
-
-    /**
-     * Checks if the group contains a student with specified id.
-     * 
-     * @param id the id
-     * @return true, if successful
-     * @throws ServerException the server exception
-     */
-    public boolean containsStudent(int id) throws ServerException {
-        for (Student student : students) {
-            if (student.getId() == id)
-                return true;
-        }
-        return false;
-    }
-
     /**
      * Gets the List of students.
      * 
@@ -164,21 +127,11 @@ public class Group implements Cloneable {
         return null;
     }
 
-    @Override
-    public Object clone() {
-        try {
-            Group newGroup = (Group) super.clone();
-            newGroup.setStudents(new ArrayList<Student>());
-            for (Student st : students) {
-                newGroup.addStudent((Student) st.clone());
-            }
-            return newGroup;
-        } catch (CloneNotSupportedException e) {
-            throw new InternalError();
-        }
-    }
-
     public void setStudents(ArrayList<Student> students) {
         this.students = students;
     }
+    
+    public int getId() {
+		return this.id;
+	}
 }
