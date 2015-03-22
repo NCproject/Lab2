@@ -1,11 +1,6 @@
 package edu.sumdu.server.model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Class Faculty.
@@ -19,7 +14,16 @@ public class Faculty {
     private ArrayList<Group> groups = new ArrayList<Group>();  
     
     public Faculty() {
-        // TODO Auto-generated constructor stub
+
+    }
+    
+    public Faculty(String name) {
+    	setName(name);
+    }
+    
+    public Faculty(String name, int id) {
+    	setName(name);
+    	setId(id);
     }
 
     /**

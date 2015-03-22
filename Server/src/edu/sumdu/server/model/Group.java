@@ -46,6 +46,17 @@ public class Group {
         setFakulty(fakultyId);
         setNumber(number);
     }
+    
+    /**
+     * Instantiates a new group.
+     * 
+     * @param fakulty the faculty
+     * @param number the number
+     */
+    public Group(String number, int id) {
+        setId(id);
+        setNumber(number);
+    }
 
     public Group() {
         // TODO Auto-generated constructor stub

@@ -84,6 +84,9 @@
 		</action>		
 	</header>
 	<body>	
+		<status>
+			Success || Exception
+		</status>
 		<!-- in case of successful adding -->		
 		<id>
 			studentId || groupId || facultyId

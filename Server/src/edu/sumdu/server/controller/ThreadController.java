@@ -1,5 +1,6 @@
 package edu.sumdu.server.controller;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
@@ -21,6 +22,8 @@ public class ThreadController extends Thread {
     private Socket socket;
     private static final Logger log = Logger.getLogger(ThreadController.class);
     private String xmlMessage;
+    private String exceptMessage = null;
+    private int resultId = 0;
         
     /**
      * Set model
@@ -88,6 +91,7 @@ public class ThreadController extends Thread {
     public void exceptionHandling(Exception ex) {
         if (log.isDebugEnabled())
             log.debug("Method call. Arguments: " + ex);
+        exceptMessage = ex.toString();
     }
 
     /**
@@ -150,6 +154,76 @@ public class ThreadController extends Thread {
             	String lastName = xPath.evaluate("//searchText", xBody);
             	out.writeUTF(filterMessage(model.getStudentsByFilters(facultyId, groupId, lastName)));
             }  
+            
+            if ("SEARCH_STUDENTS".equals(action)) {
+            	int facultyId = Integer.parseInt(xPath.evaluate("//faculty", xBody));
+            	int groupId = Integer.parseInt(xPath.evaluate("//group", xBody));
+            	String lastName = xPath.evaluate("//searchText", xBody);
+            	out.writeUTF(filterMessage(model.getStudentsByFilters(facultyId, groupId, lastName)));
+            }  
+            
+            if ("REMOVE_STUDENT".equals(action)) {
+            	int id = Integer.parseInt(xPath.evaluate("//id", xBody));
+                runAction(id, "RemoveStudent");
+                out.writeUTF(resultMessage(0,action));
+            }
+            
+            if ("REMOVE_GROUP".equals(action)) {
+            	int id = Integer.parseInt(xPath.evaluate("//id", xBody));
+                runAction(id, "RemoveGroup");
+                out.writeUTF(resultMessage(0,action));
+            }
+            
+            if ("REMOVE_FACULTY".equals(action)) {
+            	int id = Integer.parseInt(xPath.evaluate("//id", xBody));
+                runAction(id, "RemoveFaculty");
+                out.writeUTF(resultMessage(0,action));
+            }
+            
+            if ("ADD_GROUP".equals(action)) {
+            	int facultyId = Integer.parseInt(xPath.evaluate("//faculty", xBody));
+            	String number = xPath.evaluate("//number", xBody);
+                runAction(new Group(facultyId, number), "AddGroup");
+                out.writeUTF(resultMessage(resultId, action));
+            }
+            
+            if ("ADD_FACULTY".equals(action)) {
+            	String name = xPath.evaluate("//name", xBody);
+                runAction(new Faculty(name), "AddFaculty");
+                out.writeUTF(resultMessage(resultId, action));
+            }
+            
+            if ("ADD_STUDENT".equals(action)) {
+            	int groupId = Integer.parseInt(xPath.evaluate("//group", xBody));
+            	String firstName = xPath.evaluate("//studentName", xBody);
+            	String lastName = xPath.evaluate("//studentLastname", xBody);
+            	String enrolled = xPath.evaluate("//enrolledDate", xBody);
+                runAction(new Student(groupId, firstName, lastName, enrolled), "AddStudent");
+                out.writeUTF(resultMessage(resultId, action));
+            }
+            
+            if ("CHANGE_GROUP".equals(action)) {
+            	int groupId = Integer.parseInt(xPath.evaluate("//id", xBody));
+            	String number = xPath.evaluate("//number", xBody);
+                runAction(new Group(number, groupId), "ChangeGroup");
+                out.writeUTF(resultMessage(0, action));
+            }
+            
+            if ("CHANGE_FACULTY".equals(action)) {
+            	int facultyId = Integer.parseInt(xPath.evaluate("//id", xBody));
+            	String name = xPath.evaluate("//name", xBody);
+                runAction(new Faculty(name, facultyId), "ChangeFaculty");
+                out.writeUTF(resultMessage(0, action));
+            }
+            
+            if ("CHANGE_STUDENT".equals(action)) {
+            	int id = Integer.parseInt(xPath.evaluate("//id", xBody));            	
+            	String firstName = xPath.evaluate("//studentName", xBody);
+            	String lastName = xPath.evaluate("//studentLastname", xBody);
+            	String enrolled = xPath.evaluate("//enrolledDate", xBody);
+                runAction(new Student(firstName, lastName, enrolled, id), "ChangeStudent");
+                out.writeUTF(resultMessage(0, action));
+            }
         } catch (Exception e) {
             log.error("Exception", e);
             throw new ServerException(e);
@@ -158,6 +232,41 @@ public class ThreadController extends Thread {
                 out.flush();
             }
         }
+    }
+    
+    /**
+     * Creating request according to result
+     */
+    private String resultMessage(int id, String action) {
+    	if (log.isDebugEnabled())
+            log.debug("Method call");
+        StringBuilder builder = new StringBuilder();
+        String result;
+        if (exceptMessage == null) {
+            result = "Success";
+        } else {
+            result = "Exception";
+        }
+        builder.append("<envelope><header><action>");
+        builder.append(action);
+        builder.append("</action></header><body>");
+        builder.append("<status>");
+        builder.append(result);
+        builder.append("</status>");
+        if (id != 0) {
+        	builder.append("<id>");
+            builder.append(id);
+            builder.append("</id>");
+            resultId = 0;
+        }
+        if (exceptMessage != null) {
+            builder.append("<stackTrace>");
+            builder.append(exceptMessage);           
+            builder.append("</stackTrace>");
+            exceptMessage = null;
+        }
+        builder.append("</body></envelope>");
+        return builder.toString();
     }
     
     /**
@@ -229,12 +338,12 @@ public class ThreadController extends Thread {
             builder.append("<id>");
             builder.append(student.getId());
             builder.append("</id>");
-            builder.append("<studentName>");
+            builder.append("<firstName>");
             builder.append(student.getFirstName());
-            builder.append("</studentName>");    
-            builder.append("<studentLastName>");
+            builder.append("</firstName>");    
+            builder.append("<lastName>");
             builder.append(student.getLastName());
-            builder.append("</studentLastName>");
+            builder.append("</lastName>");
             builder.append("<group>");
             builder.append(student.getGroupId());
             builder.append("</group>");
@@ -263,5 +372,19 @@ public class ThreadController extends Thread {
         builder.append("</message></body></envelope>");        
 
         return builder.toString();
+    }
+    
+    /**
+     * Creating action and send it to controller
+     */
+    private void runAction(Object source, String command) {
+        if (log.isDebugEnabled())
+            log.debug("Method call " + command + " " + source);
+        ActionEvent event = new ActionEvent(source, 0, command);
+        controller.actionPerformed(event);
+    }
+    
+    public void setResultId(int id) {
+    	this.resultId = id;
     }
 }

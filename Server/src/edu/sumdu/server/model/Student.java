@@ -191,13 +191,27 @@ public class Student implements Cloneable {
      * @param enrolled the enrolled date
      * @throws ServerException
      */
-    public Student(int id, String firstName, String lastName,
-            int groupId, int facultyId, String enrolled) throws ServerException {
+    public Student(String firstName, String lastName, String enrolled, int id) throws ServerException {
         setId(id);
         setFirstName(firstName);
         setLastName(lastName);
+        setEnrolled(enrolled); 
+    }
+    
+    /**
+     * Instantiates a new student.
+     * 
+     * @param id the id
+     * @param firstName the first name
+     * @param lastName the last name
+     * @param groupNumber the group number
+     * @param enrolled the enrolled date
+     * @throws ServerException
+     */
+    public Student(int groupId, String firstName, String lastName, String enrolled) throws ServerException {        
+        setFirstName(firstName);
+        setLastName(lastName);
         setGroupId(groupId);
-        setFacultyId(facultyId);
         setEnrolled(enrolled); 
     }
 

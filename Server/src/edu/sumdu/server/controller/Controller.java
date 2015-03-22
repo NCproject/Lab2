@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
 
 import edu.sumdu.server.model.*;
 import edu.sumdu.server.controller.ControllerException;
@@ -28,9 +27,6 @@ public class Controller implements ActionListener {
     
     /** threadController */
     private ThreadController threadController;
-    
-    /** Connection */
-    private Connection conn;
 
     /**
      * Instantiates a new controller.
@@ -49,6 +45,36 @@ public class Controller implements ActionListener {
         if (log.isDebugEnabled())
             log.debug("Method call. Arguments: " + e.getActionCommand() + " "
                     + e.getSource());       
+        try {
+        	if ("AddFaculty".equals(e.getActionCommand())){
+                int id = server.addFaculty((Faculty) e.getSource());
+            	this.threadController.setResultId(id);
+        	}
+            if ("AddGroup".equals(e.getActionCommand())){
+            	int id = server.addGroup((Group) e.getSource());
+            	this.threadController.setResultId(id);
+            }
+            if ("AddStudent".equals(e.getActionCommand())){
+            	int id = server.addStudent((Student) e.getSource());
+            	this.threadController.setResultId(id);
+            }
+            if ("ChangeFaculty".equals(e.getActionCommand()))
+                server.changeFaculty((Faculty) e.getSource());
+            if ("ChangeGroup".equals(e.getActionCommand()))
+                server.changeGroup((Group) e.getSource());
+            if ("ChangeStudent".equals(e.getActionCommand()))
+                server.changeStudent((Student) e.getSource());
+            if ("RemoveFaculty".equals(e.getActionCommand()))
+                server.removeFaculty((int) e.getSource());
+            if ("RemoveGroup".equals(e.getActionCommand()))
+                server.removeGroup((int) e.getSource());
+            if ("RemoveStudent".equals(e.getActionCommand()))
+                server.removeStudent((int) e.getSource());
+        } catch (ServerException ex) {
+            ControllerException e1 = new ControllerException(ex);
+            log.error("Exception", e1);
+            threadController.exceptionHandling(e1);
+        }
     }
 
     /**
