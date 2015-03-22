@@ -1,68 +1,62 @@
-<!-- Update client info -->
+<!-- Sign in request -->
 <envelope>
 	<header>
 		<action>
-			UPDATE
+			SIGN
 		</action>		
 	</header>
 	<body>		
+		<login>
+			login
+		</login>
+		<password>
+			password
+		</password>
 	</body>
 </envelope>
 
-<!-- Operations with groups -->
+<!-- Show filters request -->
 <envelope>
 	<header>
 		<action>
-			SHOW || REMOVEGroup || ADDGroup
-		</action>
-		<fakulty>
-			faculty
-		</fakulty>
-		<group>
-			group
-		</group>
+			SHOW_FILTERS
+		</action>		
 	</header>
-	<body>		
+	<body>	
 	</body>
 </envelope>
 
-<!-- Delete student -->
+<!-- Search students request -->
 <envelope>
 	<header>
 		<action>
-			REMOVE
-		</action>
-		<fakulty>
-			faculty
-		</fakulty>
-		<group>
-			group
-		</group>
+			SEARCH_STUDENTS
+		</action>		
 	</header>
-	<body>
-		<studentID>
-			id 
-		</studentID>		
+	<body>	
+		<faculty>
+			facultyId
+		</faculty>
+		<group>
+			groupId
+		</group>
+		<searchText>
+			searchText
+		</searchText>
 	</body>
 </envelope>
 
-<!-- Add or change student -->
+<!-- Add student request -->
 <envelope>
 	<header>
 		<action>
-			ADD || CHANGE
-		</action>
-		<fakulty>
-			faculty
-		</fakulty>
-		<group>
-			group
-		</group>
+			ADD_STUDENT
+		</action>		
 	</header>
-	<body>
-		<studentID>
-			id 
-		</studentID>
+	<body>			
+		<group>
+			groupId
+		</group>
 		<studentName>
 			firstName
 		</studentName>
@@ -72,5 +66,136 @@
 		<enrolledDate>
 			date
 		</enrolledDate>	
+	</body>
+</envelope>
+
+<!-- Change student request -->
+<envelope>
+	<header>
+		<action>
+			CHANGE_STUDENT
+		</action>		
+	</header>
+	<body>			
+		<id>
+			studentId
+		</id>
+		<studentName>
+			firstName
+		</studentName>
+		<studentLastname>
+			lastName
+		</studentLastname>
+		<enrolledDate>
+			date
+		</enrolledDate>	
+	</body>
+</envelope>
+
+<!-- Remove student request -->
+<envelope>
+	<header>
+		<action>
+			REMOVE_STUDENT
+		</action>		
+	</header>
+	<body>			
+		<id>
+			studentId
+		</id>		
+	</body>
+</envelope>
+
+<!-- Add group request -->
+<envelope>
+	<header>
+		<action>
+			ADD_GROUP
+		</action>		
+	</header>
+	<body>			
+		<faculty>
+			facultyId
+		</faculty>
+		<number>
+			groupNumber
+		</number>		
+	</body>
+</envelope>
+
+<!-- Change group request -->
+<envelope>
+	<header>
+		<action>
+			CHANGE_GROUP
+		</action>		
+	</header>
+	<body>			
+		<id>
+			groupId
+		</id>
+		<number>
+			groupNumber
+		</number>		
+	</body>
+</envelope>
+
+<!-- Remove group request -->
+<envelope>
+	<header>
+		<action>
+			REMOVE_GROUP
+		</action>		
+	</header>
+	<body>			
+		<id>
+			groupId
+		</id>	
+	</body>
+</envelope>
+
+
+<!-- Add faculty request -->
+<envelope>
+	<header>
+		<action>
+			ADD_FACULTY
+		</action>		
+	</header>
+	<body>			
+		<name>
+			facultyName
+		</name>			
+	</body>
+</envelope>
+
+<!-- Change faculty request -->
+<envelope>
+	<header>
+		<action>
+			CHANGE_FACULTY
+		</action>		
+	</header>
+	<body>			
+		<id>
+			facultyId
+		</id>
+		<name>
+			facultyName
+		</name>		
+	</body>
+</envelope>
+
+<!-- Remove faculty request -->
+<envelope>
+	<header>
+		<action>
+			REMOVE_FACULTY
+		</action>		
+	</header>
+	<body>			
+		<id>
+			facultyId
+		</id>	
 	</body>
 </envelope>

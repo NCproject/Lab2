@@ -1,62 +1,132 @@
-<!-- Show response -->
+<!-- Sign in response -->
 <envelope>
 	<header>
 		<action>
-			SHOW
+			SIGN
+		</action>		
+	</header>
+	<body>		
+		<access>
+			allow / deny
+		</access>
+	</body>
+</envelope>
+
+<!-- Show filters response -->
+<envelope>
+	<header>
+		<action>
+			SHOW_FILTERS
+		</action>		
+	</header>
+	<body>	
+		<faculties>
+			<faculty>
+				<id>
+					facultyId
+				</id>
+				<name>
+					facultyName
+				</name>
+				<groups>
+					<group>
+						<id>
+							groupId
+						</id>
+						<number>
+							groupNumber
+						</number>
+					</group>
+				</groups>
+			</faculty>
+		</faculties>
+	</body>
+</envelope>
+
+<!-- Search students response -->
+<envelope>
+	<header>
+		<action>
+			SEARCH_STUDENTS
 		</action>		
 	</header>
 	<body>	
 		<students>
 			<student>
-				<studentID>
-					id 
-				</studentID>
-				<studentName>
+				<id>
+					studentId
+				</id>
+				<firstName>
 					firstName
-				</studentName>
-				<studentLastname>
+				</firstName>
+				<lastName>
 					lastName
-				</studentLastname>
+				</lastName>
 				<enrolledDate>
-					date
-				</enrolledDate>	
+					enrolledDate
+				</enrolledDate>
+				<group>
+					groupId
+				</group>
+				<faculty>
+					facultyId
+				</faculty>
 			</student>
 		</students>
 	</body>
 </envelope>
 
-<!-- Update response -->
+<!-- Add student/group/faculty response -->
 <envelope>
 	<header>
 		<action>
-			UPDATE
+			ADD_STUDENT || ADD_GROUP || ADD_FACULTY
 		</action>		
 	</header>
-	<body>
-		<groups>
-			<group>
-				<fakulty>
-					faculty
-				</fakulty>
-				<name>
-					groupName
-				</name>
-			</group>
-		</groups>	
-	</body>
-</envelope>
-
-<!-- Result response -->
-<envelope>
-	<header>
-		<action>
-			Success || Exception
-		</action>		
-	</header>
-	<body>
+	<body>	
+		<!-- in case of successful adding -->		
+		<id>
+			studentId || groupId || facultyId
+		</id>
 		<!-- in case of exception -->
 		<stackTrace>
 			exceptMessage
 		</stackTrace>
+	</body>
+</envelope>
+
+<!-- Change student/group/faculty response -->
+<envelope>
+	<header>
+		<action>
+			CHANGE_STUDENT || CHANGE_GROUP || CHANGE_FACULTY
+		</action>		
+	</header>
+	<body>			
+		<status>
+			Success || Exception
+		</status>
+		<!-- in case of exception -->
+		<stackTrace>
+			exceptMessage
+		</stackTrace>
+	</body>
+</envelope>
+
+<!-- Remove student/group/faculty response -->
+<envelope>
+	<header>
+		<action>
+			REMOVE_STUDENT || REMOVE_GROUP || REMOVE_FACULTY
+		</action>		
+	</header>
+	<body>			
+		<status>
+			Success || Exception
+		</status>
+		<!-- in case of exception -->
+		<stackTrace>
+			exceptMessage
+		</stackTrace>	
 	</body>
 </envelope>
